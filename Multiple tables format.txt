@@ -1,0 +1,510 @@
+Sub ZmianaWWieluPlikach()
+    Dim MyPath As String, FilesInPath As String
+    Dim MyFiles() As String, Fnum As Long
+    Dim mybook As Workbook
+    Dim CalcMode As Long
+    Dim sh As Worksheet
+    Dim ErrorYes As Boolean
+
+    'Fill in the path\folder where the files are
+    MyPath = "C:\Users\rwojciechowski\Desktop\XLSX_EN"
+
+    'Add a slash at the end if the user forget it
+    If Right(MyPath, 1) <> "\" Then
+        MyPath = MyPath & "\"
+    End If
+
+    'If there are no Excel files in the folder exit the sub
+    FilesInPath = Dir(MyPath & "*.xl*")
+    If FilesInPath = "" Then
+        MsgBox "No files found"
+        Exit Sub
+    End If
+
+    'Fill the array(myFiles)with the list of Excel files in the folder
+    Fnum = 0
+    Do While FilesInPath <> ""
+        Fnum = Fnum + 1
+        ReDim Preserve MyFiles(1 To Fnum)
+        MyFiles(Fnum) = FilesInPath
+        FilesInPath = Dir()
+    Loop
+
+    'Change ScreenUpdating, Calculation and EnableEvents
+    With Application
+        CalcMode = .Calculation
+        .Calculation = xlCalculationManual
+        .ScreenUpdating = False
+        .EnableEvents = False
+    End With
+
+    'Loop through all files in the array(myFiles)
+    If Fnum > 0 Then
+        For Fnum = LBound(MyFiles) To UBound(MyFiles)
+            Set mybook = Nothing
+            On Error Resume Next
+            Set mybook = Workbooks.Open(MyPath & MyFiles(Fnum))
+            On Error GoTo 0
+
+            If Not mybook Is Nothing Then
+
+                'Change cell value(s) in one worksheet in mybook
+                On Error Resume Next
+                With mybook.Worksheets("Dane PKT")
+                    If .ProtectContents = False Then
+                        .Range("A1").Value = "DATE:"
+                        .Range("A2").Value = "VOIVODESHIP:"
+                        .Range("A3").Value = "CITY:"
+                        .Range("A4").Value = "AREA:"
+                        .Range("A5").Value = "LOCATION:"
+                        .Range("A6").Value = "STREET:"
+                        .Range("A7").Value = "ROAD:"
+                        .Range("A8").Value = "LATITUDE:"
+                        .Range("A9").Value = "LONGITUDE:"
+                        .Range("A10").Value = "DIRECTION A:"
+                        .Range("A11").Value = "DIRECTION B:"
+                        .Range("A12").Value = "TABLE NO.:"
+                        .Range("A13").Value = "FIGURE NO.:"
+                    Else
+                        ErrorYes = True
+                    End If
+                End With
+                With mybook.Worksheets("Tablica")
+                    If .ProtectContents = False Then
+                        .Range("AC2").Value = "=CONCATENATE(""Table P"",'Dane PKT'!R[10]C[-27])"
+                        .Range("E6:G6").Value = "=IF('Dane PKT'!R[-2]C[-3]=""M"",""Urban (M)"",IF('Dane PKT'!R[-2]C[-3]=""ZM"",""Non-urban (ZM)"",""""))"
+                        .Range("AE31").Value = "Cars"
+                        .Range("AE32").Value = "Vans"
+                        .Range("AE33").Value = "Buses"
+                        .Range("AE34").Value = "Trucks without trailers"
+                        .Range("AE35").Value = "Trucks with trailers"
+                        .Range("AE36").Value = "Motorcycles"
+                        .Range("B8:D8").Value = "DATE:"
+                        .Range("B4:D4").Value = "VOIVODESHIP:"
+                        .Range("B5:D5").Value = "CITY:"
+                        .Range("B6:D6").Value = "AREA:"
+                        .Range("B7:D7").Value = "ROAD NO.:"
+                        .Range("B9:D9").Value = "LOCATION:"
+                        .Range("B2").Value = "TRAFFIC FLOW - GENERIC STRUCTURE"
+                        .Range("O7:AC9").Value = "=IF('Dane PKT'!R[-1]C[-13]<>"""",CONCATENATE('Dane PKT'!R[-1]C[-13],"" St""),IF('Dane PKT'!RC[-13]<>"""",CONCATENATE(""road no.: "",'Dane PKT'!RC[-13]),""""))"
+                        .Range("E13:AB13").Value = "Hours"
+                        .Range("B13:B14").Value = "Direction"
+                        .Range("C13:C14").Value = "Paremeter"
+                        .Range("D13:D14").Value = "Unit"
+                        .Range("B31:B38").Value = "TOTAL"
+                        .Range("AC13:AC14").Value = "24 hours"
+                        .Range("AF14").Value = "generic structure"
+                        .Range("B40:AC40").Value = "NM - Sum of motorcycles, NO - Sum of cars, ND - Sum of vans, NA - Sum of buses, NC - Sum of trucks without trailers, NCP - Sum of trucks with trailers, N - Total number of vehicles"
+                        .Range("B40:AC40").Select
+                        With ActiveCell.Characters(Start:=1, Length:=1).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = False
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=2, Length:=1).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = True
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=3, Length:=24).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = False
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=27, Length:=1).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = True
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=28, Length:=17).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = False
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=45, Length:=1).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = True
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=46, Length:=17).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = False
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=63, Length:=1).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = True
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=64, Length:=18).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = False
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=82, Length:=1).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = True
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=83, Length:=36).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = False
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=119, Length:=2).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = True
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                        With ActiveCell.Characters(Start:=121, Length:=60).Font
+                            .Name = "Arial CE"
+                            .FontStyle = "Pogrubiony"
+                            .Size = 10
+                            .Strikethrough = False
+                            .Superscript = False
+                            .Subscript = False
+                            .OutlineFont = False
+                            .Shadow = False
+                            .Underline = xlUnderlineStyleNone
+                            .ColorIndex = xlAutomatic
+                            .TintAndShade = 0
+                            .ThemeFont = xlThemeFontNone
+                        End With
+                    Else
+                        ErrorYes = True
+                    End If
+                End With
+                With mybook.Worksheets("Wykresy")
+                    If .ProtectContents = False Then
+                        .Range("B2").Value = "TRAFFIC FLOW"
+                        .Range("B10:I10").Value = "=CONCATENATE(""Traffic flow - "",Tablica!R[5]C)"
+                        .Range("J10:Q10").Value = "=CONCATENATE(""Daily traffic flow variability - "",Tablica!R[13]C[-8])"
+                        .Range("Q2").Value = "=CONCATENATE(""Figure P"",'Dane PKT'!R[11]C[-15])"
+                            
+                        .ChartObjects("GS").Activate
+                        Selection.Chart.ChartTitle.Text = "Generic structure"
+                            
+                        .ChartObjects("TF").Activate
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Select
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Text = "hours"
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Left = 200
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Top = 187
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Select
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Text = "Section traffic flow" & Chr(13) & " [P/hour]"
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Left = 19
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Top = 25
+                            
+                        .ChartObjects("TFV").Activate
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Select
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Text = "godziny"
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Left = 200
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Top = 187
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Select
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Text = "Traffic flow variablity" & Chr(13) & " [P/hour]"
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Left = 19
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Top = 25
+                                                                                  
+                    Else
+                        ErrorYes = True
+                    End If
+                End With
+                With mybook.Worksheets("Zest")
+                    If .ProtectContents = False Then
+                            .Range("A3:B3").Value = "Intersection"
+                            .Range("A1:B1").Value = "City"
+                            .Range("A2:B2").Value = "Date"
+                            .Range("D1:S2").Value = "Hours"
+                            .Range("T1:T3").Value = "Total"
+                            .Range("A4").Value = "Traffic merge"
+                            .Range("B4").Value = "Direction"
+                            .Range("C4").Value = "GEN.STRUC."
+                            '.Range("A17").Value = "Road"
+                            '.Range("A58").Value = "Road"
+                            '.Range("A99").Value = "Road"
+                            '.Range("A140").Value = "Road"
+                            .Range("B45:C45").Value = "TOTAL N"
+                            .Range("B86:C86").Value = "TOTAL E"
+                            .Range("B127:C127").Value = "TOTAL S"
+                            .Range("B168:C168").Value = "TOTAL W"
+                            .Range("C10").Value = "Motorcycles"
+                            .Range("C11").Value = "Bikes"
+                            .Range("C12").Value = "Trams"
+                            .Range("C13").Value = "Others"
+                            .Range("C14").Value = "TOTAL"
+                            
+                            .Range("C20").Value = "Motorcycles"
+                            .Range("C21").Value = "Bikes"
+                            .Range("C22").Value = "Tram"
+                            .Range("C23").Value = "Others"
+                            .Range("C24").Value = "TOTAL"
+                            
+                            .Range("C30").Value = "Motorcycles"
+                            .Range("C31").Value = "Bikes"
+                            .Range("C32").Value = "Trams"
+                            .Range("C33").Value = "Others"
+                            .Range("C34").Value = "TOTAL"
+                            
+                            .Range("C51").Value = "Motorcycles"
+                            .Range("C52").Value = "Bikes"
+                            .Range("C53").Value = "Trams"
+                            .Range("C54").Value = "Others"
+                            .Range("C55").Value = "TOTAL"
+                            
+                            .Range("C61").Value = "Motorcycles"
+                            .Range("C62").Value = "Bikes"
+                            .Range("C63").Value = "Trams"
+                            .Range("C64").Value = "Others"
+                            .Range("C65").Value = "TOTAL"
+                            
+                            .Range("C71").Value = "Motorcycles"
+                            .Range("C72").Value = "Bikes"
+                            .Range("C73").Value = "Trams"
+                            .Range("C74").Value = "Others"
+                            .Range("C75").Value = "TOTAL"
+                            
+                            .Range("C92").Value = "Motorcycles"
+                            .Range("C93").Value = "Bikes"
+                            .Range("C94").Value = "Trams"
+                            .Range("C95").Value = "Others"
+                            .Range("C96").Value = "TOTAL"
+                            
+                            .Range("C102").Value = "Motorcycles"
+                            .Range("C103").Value = "Bikes"
+                            .Range("C104").Value = "Trams"
+                            .Range("C105").Value = "Others"
+                            .Range("C106").Value = "TOTAL"
+                            
+                            .Range("C112").Value = "Motorcycles"
+                            .Range("C113").Value = "Bikes"
+                            .Range("C114").Value = "Trams"
+                            .Range("C115").Value = "Others"
+                            .Range("C116").Value = "TOTAL"
+                                                        
+                            .Range("C133").Value = "Motorcycles"
+                            .Range("C134").Value = "Bikes"
+                            .Range("C135").Value = "Trams"
+                            .Range("C136").Value = "Others"
+                            .Range("C137").Value = "TOTAL"
+                            
+                            .Range("C143").Value = "Motorcycles"
+                            .Range("C144").Value = "Bikes"
+                            .Range("C145").Value = "Trams"
+                            .Range("C146").Value = "Others"
+                            .Range("C147").Value = "TOTAL"
+                            
+                            .Range("C153").Value = "Motorcycles"
+                            .Range("C154").Value = "Bikes"
+                            .Range("C155").Value = "Trams"
+                            .Range("C156").Value = "Others"
+                            .Range("C157").Value = "TOTAL"
+                            
+                            .Range("A169:C169").Value = "TOTAL"
+                            
+                            .Range("AE5").Value = "Cars"
+                            .Range("AE6").Value = "Vans"
+                            .Range("AE7").Value = "Buses"
+                            .Range("AE8").Value = "Trucks without trailers"
+                            .Range("AE9").Value = "Trucks with trailers"
+                            .Range("AE10").Value = "Motorcycles"
+                    Else
+                        ErrorYes = True
+                    End If
+                End With
+                With mybook.Worksheets("WykresyNW")
+                    If .ProtectContents = False Then
+                        
+                        .ChartObjects("Wykres 1").Activate
+                        Selection.Chart.ChartTitle.Text = "Volume on traffic merge N [P/h]"
+                        .ChartObjects("Wykres 2").Activate
+                        Selection.Chart.ChartTitle.Text = "Volume on traffic merge E [P/h]"
+                        .ChartObjects("Wykres 3").Activate
+                        Selection.Chart.ChartTitle.Text = "Volume on traffic merge S [P/h]"
+                        .ChartObjects("Wykres 4").Activate
+                        Selection.Chart.ChartTitle.Text = "Volume on traffic merge W [P/h]"
+                                                                                                                                   
+                    Else
+                        ErrorYes = True
+                    End If
+                End With
+                
+                With mybook.Worksheets("Tabelka_Ph")
+                    If .ProtectContents = False Then
+                        
+                        .Range("B3:K3").Value = "Traffic flow"
+                        .Range("B14:Q14").Value = "HOURS"
+                        .Range("R14:15").Value = "TOTAL"
+                        .Range("A14:A16").Value = "DIRECTION"
+                        .Range("A37").Value = "Total"
+                        .Range("A4").Value = "Traffic merge"
+                        .Range("B4").Value = "Direction"
+                        .ChartObjects("GS").Activate
+                        Selection.Chart.ChartTitle.Text = "Generic structure"
+                        .ChartObjects("TF").Activate
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Select
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Text = "hours"
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Left = 200
+                        ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Top = 187
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Select
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Text = "Intersection traffic flow" & Chr(13) & " [P/hour]"
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Left = 19
+                        ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Top = 25
+                        
+                                                                                                                                   
+                    Else
+                        ErrorYes = True
+                    End If
+                End With
+                With mybook.Worksheets("Tabelka_Eh")
+                    If .ProtectContents = False Then
+                        
+                        .Range("B3:K3").Value = "Traffic flow"
+                        .Range("B14:Q14").Value = "HOURS"
+                        .Range("R14:15").Value = "TOTAL"
+                        .Range("A14:A16").Value = "DIRECTION"
+                        .Range("A37").Value = "Total"
+                        .Range("A4").Value = "Traffic merge"
+                        .Range("B4").Value = "Direction"
+                                                                                                                                   
+                    Else
+                        ErrorYes = True
+                    End If
+                End With
+                If Err.Number > 0 Then
+                    ErrorYes = True
+                    Err.Clear
+                    'Close mybook without saving
+                    mybook.Close savechanges:=True
+                Else
+                    'Save and close mybook
+                    mybook.Close savechanges:=True
+                End If
+                On Error GoTo 0
+            Else
+                'Not possible to open the workbook
+                ErrorYes = True
+            End If
+
+        Next Fnum
+    End If
+
+    If ErrorYes = True Then
+        MsgBox "There are problems in one or more files, possible problem:" _
+             & vbNewLine & "protected workbook/sheet or a sheet/range that not exist"
+    End If
+
+    'Restore ScreenUpdating, Calculation and EnableEvents
+    With Application
+        .ScreenUpdating = True
+        .EnableEvents = True
+        .Calculation = CalcMode
+    End With
+End Sub
+
